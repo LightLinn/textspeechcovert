@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, createContext, useContext, useEffect } from 'react';
-
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
