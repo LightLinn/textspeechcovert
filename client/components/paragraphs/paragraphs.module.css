@@ -1,0 +1,62 @@
+.container{
+  
+}
+
+.btn {
+  background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); 
+  border: none; 
+  padding: 10px 20px;
+  color: white;
+  text-align: center; 
+  text-decoration: none; 
+  display: inline-block; 
+  margin: 4px auto;
+  cursor: pointer; 
+  border-radius: 5px; 
+  transition: background-color 0.3s, box-shadow 0.3s;
+  width: 150px;
+  font-size: 16px;
+}
+
+.btn:hover {
+  background-image: linear-gradient(300deg, #89f7fe 0%, #66a6ff 100%); /* 滑鼠懸停時漸層方向反向 */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* 滑鼠懸停時增加陰影 */
+}
+
+.paragraphContainer{
+  margin: 50px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 80%;
+}
+
+.ytinput{
+  height: 30px;
+  padding: 5px;
+}
+
+.ytinput::placeholder{
+  font-size: 14px;
+}
+
+.textArea{
+  max-width: 100%;
+  font-size: 14px;
+  padding: 5px 5px;
+}
+
+.textArea::placeholder{
+  font-size: 14px;
+}
+
+.historySelection{
+  padding: 10px;
+  font-size: 20px;
+}
+
+@media screen and (max-width: 640px) {
+  .paragraphContainer{
+    width: 100%;
+  }
+}

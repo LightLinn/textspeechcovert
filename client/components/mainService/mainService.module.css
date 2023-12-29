@@ -1,0 +1,173 @@
+.container{
+}
+
+.btn {
+  background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); 
+  border: none; 
+  padding: 10px 20px;
+  color: white;
+  text-align: center; 
+  text-decoration: none; 
+  display: inline-block; 
+  margin: 4px auto;
+  cursor: pointer; 
+  border-radius: 5px; 
+  transition: background-color 0.3s, box-shadow 0.3s;
+  width: 100px;
+  font-size: 16px;
+}
+
+.btn:hover {
+  background-image: linear-gradient(300deg, #89f7fe 0%, #66a6ff 100%); 
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); 
+}
+
+.btnTry{
+  width: 200px;
+}
+
+.serviceContainer{
+  margin: 20px auto;
+  display: flex;
+  gap: 20px;
+  width: 80%;
+}
+
+.phraseContainer{
+  flex: 1;
+}
+
+.phraseSelection{
+  width: 100%;
+  height: 90px;
+  gap: 10px;
+}
+
+.optionBlock:checked {
+  background-color: blue; /* 選中項目的背景顏色 */
+  color: white; /* 選中項目的文字顏色 */
+}
+
+.audioContainer{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.audioPlayer{
+  width: 100%;
+}
+
+.resultsContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  margin: 0px auto;
+  padding: 50px 0px;
+}
+
+.resultsTitle{
+  margin: 0px auto;
+  color: var(--softTextColor)
+}
+
+.results{
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 80%;
+  width: 80%;
+  min-height: 80px;
+  margin: 0px auto;
+  padding: 10px 10px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  gap: 5px;
+}
+
+.resultsSpacing {
+  margin-right: 4px;
+  cursor: pointer;
+}
+
+/* .results:hover{
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+} */
+
+.reviseContainer{
+  
+}
+
+.tips{
+  margin: 0px auto;
+  font-size: 12px;
+}
+
+.btn2 {
+  background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); 
+  border: none; 
+  padding: 10px 20px;
+  color: white;
+  text-align: center; 
+  text-decoration: none; 
+  display: inline-block; 
+  margin: 10px auto;
+  cursor: pointer; 
+  border-radius: 5px; 
+  transition: background-color 0.3s, box-shadow 0.3s;
+  width: 150px;
+  font-size: 16px;
+}
+
+.btn2:hover {
+  background-image: linear-gradient(300deg, #89f7fe 0%, #66a6ff 100%); 
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); 
+}
+
+.btn2_repeat{
+  background-image: linear-gradient(300deg, #89f7fe 0%, #66a6ff 100%); 
+}
+.btn2_repeat:hover{
+  background-image: linear-gradient(300deg, #89f7fe 50%, #66a6ff 100%); 
+}
+
+.btn2_revise{
+  background-image: linear-gradient(300deg, #ff0844 0%, #ffb199 100%);
+}
+.btn2_revise:hover{
+  background-image: linear-gradient(300deg, #ff0844 50%, #ffb199 100%);
+}
+
+.btn2_next{
+  background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
+}
+.btn2_next:hover{
+  background-image: linear-gradient(to top, #0ba360 50%, #3cba92 100%);
+}
+
+.recorderContainer {
+}
+
+/* 根据需要添加更多 bar 的 nth-child 规则 */
+
+@media screen and (max-width: 1024px) {
+  .serviceContainer{
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .serviceContainer{
+    margin: 10px auto;
+    width: 100%;
+  }
+
+  .results{
+    max-width: 100%;
+    width: 100%;
+  }
+}
