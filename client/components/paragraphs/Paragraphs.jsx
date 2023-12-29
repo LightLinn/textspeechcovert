@@ -13,6 +13,7 @@ const Paragraphs = () => {
   const [reloadFlag, setReloadFlag] = useState(false);
   const { setPhrases } = useContext(DataContext);
   const { token } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const Paragraphs = () => {
             });
 
             if (!response.ok) {
-                // router.push('/login');
+                router.push('/login');
                 throw new Error('Network response was not ok');
                 
             }
@@ -47,7 +48,7 @@ const Paragraphs = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!token) {
+    if (!isLoggedIn) {
       router.push('/login');
       return;
     }
@@ -80,7 +81,7 @@ const Paragraphs = () => {
     console.log('send url')
     setIsLoading(true);
 
-    if (!token) {
+    if (!isLoggedIn) {
       router.push('/login');
       return;
     }

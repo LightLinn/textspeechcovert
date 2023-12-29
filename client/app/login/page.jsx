@@ -31,6 +31,7 @@ const Login = () => {
                 router.push('/');
             } else {
                 console.error('Login failed:', data);
+                setIsLoggedIn(false);
             }
         } catch (error) {
             console.error('Login error:', error);
