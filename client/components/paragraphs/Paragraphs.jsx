@@ -47,6 +47,11 @@ const Paragraphs = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
     if (!paragraph.trim()) {
       alert("Please input paragraph");
       return; 
@@ -61,7 +66,6 @@ const Paragraphs = () => {
       body: JSON.stringify({ content: paragraph, user: 1}),
     });
     const data = await response.json();
-    console.log(data)
     setPhrases(data.phrases)
     setReloadFlag(!reloadFlag);
     setParagraph('')
@@ -75,6 +79,12 @@ const Paragraphs = () => {
     const url = event.target.value;
     console.log('send url')
     setIsLoading(true);
+
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
     try {
       const response = await fetch('https://thundercreation.com/api/url_to_text/', {
         method: 'POST',

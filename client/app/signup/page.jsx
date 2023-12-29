@@ -13,7 +13,7 @@ const Register = () => {
 
     const handleRegister = async () => {
         try {
-            const response = await fetch('https://thundercreation.com/register/', {
+            const response = await fetch('https://thundercreation.com/api/register/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
