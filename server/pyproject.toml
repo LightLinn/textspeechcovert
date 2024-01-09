@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "server"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0"
+djangorestframework = "^3.14.0"
+djangorestframework-simplejwt = "^5.3.1"
+drf-spectacular = "^0.26.5"
+django-cors-headers = "^4.3.1"
+gtts = "^2.4.0"
+spacy = "^3.7.2"
+djoser = "^2.2.2"
+pytube = "^15.0.0"
+openai = "^1.6.1"
+ffmpeg-python = "^0.2.0"
+pydub = "^0.25.1"
+soundstretch = "^1.2"
+uwsgi = "^2.0.23"
+gunicorn = "^21.2.0"
+python-dotenv = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

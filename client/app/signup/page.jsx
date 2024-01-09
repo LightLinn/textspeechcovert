@@ -10,10 +10,13 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const router = useRouter();
 
+    const domain = 'http://localhost:8000';
+    // const domain = 'https://thundercreation.com/textspeechcovert';
+
 
     const handleRegister = async () => {
         try {
-            const response = await fetch('https://thundercreation.com/api/register/', {
+            const response = await fetch(`${domain}/register/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

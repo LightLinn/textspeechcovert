@@ -16,11 +16,14 @@ const Paragraphs = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const router = useRouter();
 
+  const domain = 'http://localhost:8000';
+    // const domain = 'https://thundercreation.com/textspeechcovert';
+
   useEffect(() => {
     const token = localStorage.getItem('token')
     const fetchParagraphs = async () => {
         try {
-            const response = await fetch('https://thundercreation.com/api/paragraphs/', {
+            const response = await fetch(`${domain}/api/paragraphs/`, {
               method: 'GET',
               headers: {
                   'Authorization': `Bearer ${token}`,
@@ -43,9 +46,10 @@ const Paragraphs = () => {
       };
       fetchParagraphs();
       
-  }, [token]); 
+  }, [token, reloadFlag]); 
 
   const handleSubmit = async (event) => {
+    const token = localStorage.getItem('token')
     event.preventDefault();
 
     if (!isLoggedIn) {
@@ -58,7 +62,7 @@ const Paragraphs = () => {
       return; 
     }
 
-    const response = await fetch('https://thundercreation.com/api/paragraphs/', {
+    const response = await fetch(`${domain}/api/paragraphs/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -87,7 +91,7 @@ const Paragraphs = () => {
     }
 
     try {
-      const response = await fetch('https://thundercreation.com/api/url_to_text/', {
+      const response = await fetch(`${domain}/api/url_to_text/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
