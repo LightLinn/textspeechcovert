@@ -5,4 +5,6 @@ pyenv local 3.11.4
 
 export PATH=$PATH:$HOME/.local/bin
 
+poetry install
+poetry run python -m spacy download en_core_web_sm
 poetry run python manage.py runserver

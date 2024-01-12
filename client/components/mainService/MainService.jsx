@@ -50,8 +50,8 @@ const MainService = () => {
   const isWaiting2 = useRef(false)
   const isWaiting3 = useRef(false)
 
-  const domain = 'http://localhost:8000';
-  // const domain = 'https://thundercreation.com/textspeechcovert';
+  //const domain = 'http://localhost:8000';
+  const domain = 'https://thundercreation.com';
   
 
   // useEffect(() => {

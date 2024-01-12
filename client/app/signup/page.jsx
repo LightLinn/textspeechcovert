@@ -10,8 +10,8 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const router = useRouter();
 
-    const domain = 'http://localhost:8000';
-    // const domain = 'https://thundercreation.com/textspeechcovert';
+    // const domain = 'http://localhost:8000';
+    const domain = 'https://thundercreation.com';
 
 
     const handleRegister = async () => {
