@@ -10,7 +10,11 @@ const Paragraphs = () => {
   const [paragraph, setParagraph] = useState('');
   const [paragraphs, setParagraphs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isShowYT, setIsShowYT] = useState(false);
   const [reloadFlag, setReloadFlag] = useState(false);
+  const [url, setUrl] = useState('');
+  const [urlInputValue, setUrlInputValue] = useState('')
+  const [videoId, setVideoId] = useState('');
   const { setPhrases } = useContext(DataContext);
   const { token } = useContext(AuthContext);
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
@@ -82,8 +86,11 @@ const Paragraphs = () => {
 
   const handleUrlToText = async (event) => {
     const url = event.target.value;
-    console.log('send url')
     setIsLoading(true);
+    const id = extractVideoID(url);
+    setVideoId(id);
+    setUrl(event.target.value);
+    setIsShowYT(true)
 
     if (!isLoggedIn) {
       router.push('/login');
@@ -109,20 +116,28 @@ const Paragraphs = () => {
     } catch (error) {
       console.error('Failed to convert URL:', error);
       setParagraph('Invalid YouTube URL')
+      // setUrlInputValue('')
     } finally {
       setIsLoading(false); 
     }
   };
 
-  const handleFocus = () => {
-    setParagraph('');
+  const extractVideoID = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+
+    if (match && match[2].length === 11) {
+      return match[2];
+    } else {
+      return null;
+    }
   };
 
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit}>
         <div className={styles.paragraphContainer}>
-          <select 
+          <select
             onChange={handleSelectChange}
             className={styles.historySelection} 
             placeholder='History Paragraph'
@@ -132,8 +147,18 @@ const Paragraphs = () => {
               <option key={index} value={p.content}>{p.content}</option>
               ))}
           </select>
-          <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='or Enter Youtube URL' />
+          <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='or Enter Youtube URL' value={urlInputValue}/>
           {isLoading && <LoadingSpinner />}
+          {isShowYT && (
+            <div className={styles.ytFrame}>
+              <iframe
+                src={`https://www.youtube.com/embed/${videoId}`}
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          )}
           <textarea 
             value={paragraph} onChange={(e) => setParagraph(e.target.value)}
             cols="30" 

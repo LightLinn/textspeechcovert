@@ -132,12 +132,13 @@ class WordInfoView(APIView):
         prompt=f"Please translate to Traditional Chinese and give a brief explanation: 「{word}」"
         client = openai.OpenAI(api_key=OPENAI_API_KEY)
         chat_completion = client.chat.completions.create(
-            messages=[
-                    {
-                        "role": "user",
-                        "content": f"{prompt}",
-                    }],
+                messages=[
+                        {
+                            "role": "user",
+                            "content": f"{prompt}",
+                        }],
                 model="gpt-3.5-turbo",
+                max_tokens=50
                 )
         return chat_completion.choices[0].message.content
 
@@ -170,7 +171,8 @@ class AudioToResultsView(APIView):
             
             corr_list = lcs_corrected(question, answer)
             wrong_list = [word for word in question if word not in corr_list]
-
+            print(corr_list)
+            print(wrong_list)
             comparison_result = ComparisonResult(
                 user=user,
                 phrase=phrase,
@@ -190,6 +192,8 @@ def stt(request, audio):
 def str_clean(string):
     string = string.replace(".", "")
     string = string.replace(",", "")
+    string = string.replace("!", "")
+    string = string.replace("?", "")
     string = string.lower().split()
     return string
 

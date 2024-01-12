@@ -44,12 +44,12 @@
 }
 
 .optionBlock:checked {
-  background-color: blue; /* 選中項目的背景顏色 */
-  color: white; /* 選中項目的文字顏色 */
+  background-color: blue; 
+  color: white; 
 }
 
 .audioContainer{
-  flex: 1;
+  /* flex: 1; */
   display: flex;
   justify-content: center;
   align-items: center;
