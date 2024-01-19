@@ -31,6 +31,11 @@
   width: 80%;
 }
 
+.topContainer{
+  display: flex;
+  gap: 10px;
+}
+
 .ytinput{
   height: 30px;
   padding: 5px;
@@ -69,6 +74,7 @@
 .historySelection{
   padding: 10px;
   font-size: 20px;
+  width: 30%;
 }
 
 @media screen and (max-width: 640px) {

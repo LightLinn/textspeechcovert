@@ -13,45 +13,49 @@ const MainService = () => {
 
   const { phrases } = useContext(DataContext);
   const { token } = useContext(AuthContext);
-  const [ phrase , setPhrase ] = useState([])
-  const [ wrongWord , setWrongWord ] = useState('')
-  const [tokenSave, setTokenSave] = useState('')
+  const [ phrase , setPhrase ] = useState([]);
+  const [ wrongWord , setWrongWord ] = useState('');
+  const [tokenSave, setTokenSave] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
-  const [wrongList, setWrongList] = useState([]);
+  const [chatgptRes, setChatgptRes] = useState('');
+  const [feedback, setFeedback] = useState('');
+  const [feedbackColor, setFeedbackColor] = useState('');
+  const [isInitialRender, setIsInitialRender] = useState(true);
+  const [wrongList, setWrongList] = useState('');
   const [corrList, setCorrList] = useState([]);
-  const [reviseList, setReviseList] = useState([])
-  const [isRevising, setIsRevising] = useState(false)
-  const [isReviseMode, setIsReviseMode] = useState(false)
+  const [reviseList, setReviseList] = useState([]);
+  const [isRevising, setIsRevising] = useState(false);
+  const [isReviseMode, setIsReviseMode] = useState(false);
   const [currWrongData, setCurrWrongData] = useState('');
   const [stream, setStream] = useState(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioData, setAudioData] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   // const [isWaiting, setIsWaiting] = useState(false)
   const [rate, setRate] = useState(0.8);
   const [text, setText] = useState('');
-  const [ show, setShow ] = useState(false)
+  const [ show, setShow ] = useState(false);
 
-  const currPhrasesIndex = useRef(0)
+  const currPhrasesIndex = useRef(0);
   const currPhraseId = useRef(0);
-  const currPhrase = useRef('')
-  const currWrongList = useRef([])
-  const currWrongWord = useRef()
-  const currRevising = useRef(false)
-  const comment = useRef('')
-  const newReviseList = useRef([])
+  const currPhrase = useRef('');
+  const currWrongList = useRef([]);
+  const currWrongWord = useRef();
+  const currRevising = useRef(false);
+  const comment = useRef('');
+  const newReviseList = useRef([]);
   const audioRef = useRef(null);
-  const count = useRef(0)
+  const count = useRef(0);
   const duration = useRef(0);
-  const isRunning = useRef(false)
-  const isWaiting = useRef(false)
-  const isWaiting2 = useRef(false)
-  const isWaiting3 = useRef(false)
+  const isRunning = useRef(false);
+  const isWaiting = useRef(false);
+  const isWaiting2 = useRef(false);
+  const isWaiting3 = useRef(false);
 
-  //const domain = 'http://localhost:8000';
-  const domain = 'https://thundercreation.com';
+  const domain = 'http://localhost:8000';
+  // const domain = 'https://thundercreation.com';
   
 
   // useEffect(() => {
@@ -80,11 +84,39 @@ const MainService = () => {
   //   console.log(phrases[currPhraseIndex].id)
   // });
   
+  // useEffect(() => {
+  //   if (wrongList) {
+  //     console.log("wrongList 更新了:", wrongList);
+  //   }
+  // }, [wrongList]);
+
   useEffect(() => {
-    if (wrongList) {
-      console.log("wrongList 更新了:", wrongList);
-      
+    let timeout;
+
+    if (isInitialRender) {
+      setIsInitialRender(false); 
+      return; 
     }
+
+    if (wrongList.length > 0) {
+      const feedbackAudio = new Audio('tryagain.mp3');
+      feedbackAudio.play()
+      setFeedback('Try again');
+      setFeedbackColor('red');
+      timeout = setTimeout(() => {
+        setFeedback('');
+      }, 3000); 
+    } else {
+      const feedbackAudio = new Audio('good.mp3');
+      feedbackAudio.play()
+      setFeedback('Good job');
+      setFeedbackColor('green');
+      timeout = setTimeout(() => {
+        setFeedback('');
+      }, 3000); 
+    }
+
+    return () => clearTimeout(timeout); 
   }, [wrongList]);
 
   useEffect(() => {
@@ -144,7 +176,7 @@ const MainService = () => {
       setTimeout(() => {
         mediaRecorder.stop();
         setIsRecording(false)
-      }, (duration.current+2)*1000);
+      }, (duration.current+2)*1000*1.2);
       // console.log((duration.current+2)*1000)
     }
   };
@@ -156,7 +188,6 @@ const MainService = () => {
       }
     };
   }, [stream]);
-
 
   const sendPhrase = () => {
     count.current = 0
@@ -206,7 +237,7 @@ const MainService = () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ phrase: newPhrase, phraseId: newPhraseId})
+            body: JSON.stringify({ phrase: newPhrase, phraseId: newPhraseId, lang: 'en'})
         });
 
         if (!response.ok) {
@@ -218,19 +249,23 @@ const MainService = () => {
         const audioUrl = URL.createObjectURL(blob);
         const pramAudio = new Audio('pram.mp3');
         return new Promise((resolve, reject) => {
-          
-          pramAudio.play();
-          pramAudio.onended = () => {
-            const phraseAudio = new Audio(audioUrl);
-            phraseAudio.addEventListener('loadedmetadata', () => {
-              duration.current = phraseAudio.duration; // 音频长度（秒）
-            });
-            phraseAudio.playbackRate = rate;
-            phraseAudio.play();
-            phraseAudio.onended = () => {
-              handleAudioEnded()
-              resolve();
-            }}
+
+          if (!isRunning.current) {
+            isWaiting.current = false
+          } else {
+            pramAudio.play();
+            pramAudio.onended = () => {
+              const phraseAudio = new Audio(audioUrl);
+              phraseAudio.addEventListener('loadedmetadata', () => {
+                duration.current = phraseAudio.duration; // 音频长度（秒）
+              });
+              phraseAudio.playbackRate = rate;
+              phraseAudio.play();
+              phraseAudio.onended = () => {
+                handleAudioEnded()
+                resolve();
+              }}
+            }
           })
 
     } catch (error) {
@@ -345,18 +380,44 @@ const MainService = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
+      setChatgptRes('')
+      setChatgptRes(data)
       return data; 
     } catch (error) {
       console.error("Error fetching word info:", error);
-      return null; 
+      return null;
     }
   };
   
   const handleWordClick = async (word) => {
-    setIsLoading(true);
-    const wordInfo = await fetchWordInfo(word);
-    setIsLoading(false);
-    alert(wordInfo)
+    if (!isRunning.current) {
+      setIsLoading(true);
+      const wordInfo = await fetchWordInfo(word);
+      setIsLoading(false);
+      try {
+        const response = await fetch(`${domain}/api/phrases/text_to_speech/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ phrase: wordInfo, lang: 'zh'})
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        };
+
+        const blob = await response.blob();
+        // duration.current = Number(response.headers.get('X-Duration'));
+        const audioUrl = URL.createObjectURL(blob);
+        const chatGPTAudio = new Audio(audioUrl);
+        chatGPTAudio.play();
+        
+
+      } catch (error) {
+          console.error('There was a problem with the fetch operation:', error);
+      }
+    }
   };
 
   const recordingAnimation = (
@@ -380,7 +441,7 @@ const MainService = () => {
       while (isRunning.current) {
         console.log(count.current)
         if (isWaiting.current) {
-          await delay(3000);
+          await delay(4000);
           console.log('wait')
           continue
         } else {
@@ -491,6 +552,7 @@ const MainService = () => {
               </option>
             ))}
           </select>
+          <div className={styles.tips} >Please click on phrase to start listening and speaking.</div>
         </div>
         
         <div className={styles.audioContainer}>
@@ -519,6 +581,7 @@ const MainService = () => {
       </div>
       {isRecording && recordingAnimation}
       {isAnalyzing && <LoadingSpinner />}
+      {feedback && <div className={styles.feedback} style={{ color: feedbackColor }}>{feedback}</div>}
       <div className={styles.resultsContainer}>
         <h2 className={styles.resultsTitle} style={{color: commentColor(comment.current)}}>
           {comment.current}
@@ -526,7 +589,6 @@ const MainService = () => {
         <div className={styles.results}>
           {!currRevising.current && (
             <>
-            
               {phrases[currPhrasesIndex.current].content.split(' ').map((word, index) => ( 
               <span 
                 onClick={() => handleWordClick(word)}
@@ -549,6 +611,9 @@ const MainService = () => {
           )}
         </div>
         {isLoading && <LoadingSpinner />}
+        <div className={styles.wordtips}>
+          {chatgptRes}
+        </div>
         <div className={styles.tips} >Click on the word to call ChatGPT.</div>
         {/* <button 
           className={`${styles.btn2} ${styles.btn2_next}`}

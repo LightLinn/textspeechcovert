@@ -15,7 +15,6 @@ django-cors-headers = "^4.3.1"
 gtts = "^2.4.0"
 spacy = "^3.7.2"
 djoser = "^2.2.2"
-pytube = "^15.0.0"
 openai = "^1.6.1"
 ffmpeg-python = "^0.2.0"
 pydub = "^0.25.1"
@@ -23,6 +22,9 @@ soundstretch = "^1.2"
 uwsgi = "^2.0.23"
 gunicorn = "^21.2.0"
 python-dotenv = "^1.0.0"
+pytube = "^15.0.0"
+social-auth-app-django = "^5.4.0"
+youtube-dl = "^2021.12.17"
 
 
 [build-system]

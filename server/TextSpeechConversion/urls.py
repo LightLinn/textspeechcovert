@@ -23,6 +23,7 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView, To
 from rest_framework.routers import DefaultRouter
 from main import views
 from authentication.views import register, logout
+from django.urls import path, include
 
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -47,7 +48,8 @@ urlpatterns = [
     path('api/url_to_text/', views.UrlToText.as_view()),
     path('api/audio_to_results/', views.AudioToResultsView.as_view(), name='audio_to_results'),
     # path('api/tts/', views.text_to_speech, name='text_to_speech'),
-    path('api/testroute/', views.my_view)
+    path('api/testroute/', views.my_view),
+    path('social-auth/', include('social_django.urls', namespace='social')),
 
 ]
 

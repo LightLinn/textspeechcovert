@@ -10,13 +10,13 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const router = useRouter();
 
-    // const domain = 'http://localhost:8000';
-    const domain = 'https://thundercreation.com';
+    const domain = 'http://localhost:8000';
+    // const domain = 'https://thundercreation.com';
 
 
     const handleRegister = async () => {
         try {
-            const response = await fetch(`${domain}/register/`, {
+            const response = await fetch(`${domain}/api/register/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

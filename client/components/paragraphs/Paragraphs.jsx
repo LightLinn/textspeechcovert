@@ -20,8 +20,8 @@ const Paragraphs = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const router = useRouter();
 
-  // const domain = 'http://localhost:8000';
-  const domain = 'https://thundercreation.com';
+  const domain = 'http://localhost:8000';
+  // const domain = 'https://thundercreation.com';
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -137,28 +137,31 @@ const Paragraphs = () => {
     <div className={styles.container}>
       <form onSubmit={handleSubmit}>
         <div className={styles.paragraphContainer}>
-          <select
-            onChange={handleSelectChange}
-            className={styles.historySelection} 
-            placeholder='History Paragraph'
-          >
-            <option selected disabled>Select Your History Paragraph</option>
-            {paragraphs.map((p, index) => (
-              <option key={index} value={p.content}>{p.content}</option>
-              ))}
-          </select>
-          <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='or Enter Youtube URL' value={urlInputValue}/>
+          <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='Enter Youtube URL' value={urlInputValue}/>
           {isLoading && <LoadingSpinner />}
-          {isShowYT && (
-            <div className={styles.ytFrame}>
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}`}
-                title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-          )}
+          <div className={styles.topContainer}>
+            <select
+            
+              onChange={handleSelectChange}
+              className={styles.historySelection}
+              placeholder='History Paragraph'
+            >
+              <option selected disabled>Select Your History Paragraph</option>
+              {paragraphs.map((p, index) => (
+                <option key={index} value={p.content}>{p.content}</option>
+                ))}
+            </select>
+            {1 && (
+              <div className={styles.ytFrame}>
+                <iframe
+                  src={`https://www.youtube.com/embed/${videoId}`}
+                  title="YouTube video player"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  ></iframe>
+              </div>
+            )}
+          </div>
           <textarea 
             value={paragraph} onChange={(e) => setParagraph(e.target.value)}
             cols="30" 

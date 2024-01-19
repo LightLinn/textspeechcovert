@@ -2026,7 +2026,18 @@ srsly = ">=2.4.3,<3.0.0"
 typer = ">=0.3.0,<0.10.0"
 wasabi = ">=0.9.1,<1.2.0"
 
+[[package]]
+name = "youtube-dl"
+version = "2021.12.17"
+description = "YouTube video downloader"
+optional = false
+python-versions = "*"
+files = [
+    {file = "youtube_dl-2021.12.17-py2.py3-none-any.whl", hash = "sha256:f1336d5de68647e0364a47b3c0712578e59ec76f02048ff5c50ef1c69d79cd55"},
+    {file = "youtube_dl-2021.12.17.tar.gz", hash = "sha256:bc59e86c5d15d887ac590454511f08ce2c47698d5a82c27bfe27b5d814bbaed2"},
+]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "13cc37bd0e834de66f272bee4600c3a7cf8f9832541af80db0f1a87d1e9eed32"
+content-hash = "a427479ab54124a4336692c5a33691134ea852bbb12587b2de46d7c88c5bf5f9"

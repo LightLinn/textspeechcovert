@@ -105,6 +105,18 @@
 .tips{
   margin: 0px auto;
   font-size: 12px;
+  font-weight: 500;
+}
+
+.wordtips{
+  margin: 0px auto;
+  font-size: 12px;
+  font-weight: 500;
+  color:#66a6ff
+}
+
+.feedback{
+  text-align: center;
 }
 
 .btn2 {

@@ -22,6 +22,7 @@ from gtts import gTTS
 import spacy
 import openai
 from pytube import YouTube
+import youtube_dl
 from pydub import AudioSegment
 import subprocess
 import ssl
@@ -103,8 +104,9 @@ class PhraseViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def text_to_speech(self, request):
         phrase = request.data.get('phrase')
-        text = phrase
-        tts = gTTS(text=text, lang='en')
+        langType = request.data.get('lang')
+        text = phrase.replace('-', ' ')
+        tts = gTTS(text=text, lang=langType)
         fp = BytesIO()
         tts.write_to_fp(fp)
         fp.seek(0)
@@ -129,7 +131,7 @@ class WordInfoView(APIView):
         return Response(word_info)
     
     def get_word_info(self, word):
-        prompt=f"Please translate to Traditional Chinese and give a brief explanation: 「{word}」"
+        prompt=f"Please use 20 characters in Traditional Chinese to explain the words.: 「{word}」"
         client = openai.OpenAI(api_key=OPENAI_API_KEY)
         chat_completion = client.chat.completions.create(
                 messages=[
@@ -138,8 +140,9 @@ class WordInfoView(APIView):
                             "content": f"{prompt}",
                         }],
                 model="gpt-3.5-turbo",
-                max_tokens=50
+                max_tokens=80
                 )
+        print(chat_completion.choices[0].message.content)
         return chat_completion.choices[0].message.content
 
 class AudioToResultsView(APIView):
@@ -196,6 +199,8 @@ def str_clean(string):
     string = string.replace("?", "")
     string = string.lower().split()
     return string
+
+
 
 def lcs_corrected(X, Y):
     """

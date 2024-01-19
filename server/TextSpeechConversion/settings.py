@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'authentication',
     'corsheaders',
     'main',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
