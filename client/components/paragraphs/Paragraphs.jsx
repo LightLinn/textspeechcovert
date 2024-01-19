@@ -20,8 +20,8 @@ const Paragraphs = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const router = useRouter();
 
-  const domain = 'http://localhost:8000';
-  // const domain = 'https://thundercreation.com';
+  // const domain = 'http://localhost:8000';
+  const domain = 'https://thundercreation.com';
 
   useEffect(() => {
     const token = localStorage.getItem('token')
