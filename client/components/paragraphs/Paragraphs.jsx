@@ -2,13 +2,16 @@ import React from 'react'
 import { useRouter } from 'next/navigation';
 import { useState, createContext, useContext, useEffect } from 'react';
 import styles from './paragraphs.module.css';
+import Link from "next/link";
 import { DataContext } from '@/context/Context';
 import LoadingSpinner from '@/components/loading/LoadingSpinner'
 import { AuthContext } from '@/context/AuthContext';
+import { domain } from '@/config';
 
 const Paragraphs = () => {
   const [paragraph, setParagraph] = useState('');
   const [paragraphs, setParagraphs] = useState([]);
+  const [recommends, setRecommends] = useState([])
   const [isLoading, setIsLoading] = useState(false);
   const [isShowYT, setIsShowYT] = useState(false);
   const [reloadFlag, setReloadFlag] = useState(false);
@@ -19,9 +22,6 @@ const Paragraphs = () => {
   const { token } = useContext(AuthContext);
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const router = useRouter();
-
-  // const domain = 'http://localhost:8000';
-  const domain = 'https://thundercreation.com';
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -45,12 +45,37 @@ const Paragraphs = () => {
         } catch (error) {
             console.error('Fetch error:', error);
         }
-
-        
       };
       fetchParagraphs();
       
   }, [token, reloadFlag]); 
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    const fetchRecommends = async () => {
+      try {
+          const response = await fetch(`${domain}/api/recommends/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+          });
+
+          if (!response.ok) {
+              router.push('/login');
+              throw new Error('Network response was not ok');
+              
+          }
+          const data = await response.json();
+          setRecommends(data);
+          console.log(recommends)
+      } catch (error) {
+          console.error('Fetch error:', error);
+      }
+    };
+    fetchRecommends()
+  }, [token, reloadFlag])
 
   const handleSubmit = async (event) => {
     const token = localStorage.getItem('token')
@@ -80,8 +105,8 @@ const Paragraphs = () => {
     setParagraph('')
   };
 
-  const handleSelectChange = (event) => {
-    setParagraph(event.target.value);
+  const handleSelectChange = (content) => {
+    setParagraph(content);
   };
 
   const handleUrlToText = async (event) => {
@@ -140,27 +165,51 @@ const Paragraphs = () => {
           <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='Enter Youtube URL' value={urlInputValue}/>
           {isLoading && <LoadingSpinner />}
           <div className={styles.topContainer}>
-            <select
-            
-              onChange={handleSelectChange}
-              className={styles.historySelection}
-              placeholder='History Paragraph'
-            >
-              <option selected disabled>Select Your History Paragraph</option>
-              {paragraphs.map((p, index) => (
-                <option key={index} value={p.content}>{p.content}</option>
+            <div className={styles.historyContainer}>
+              <h3 className={styles.titleH3}>Recommended</h3>
+              <ul className={styles.recommendList}>
+                {recommends.map((p, index) => (
+                  <li className={styles.recommend}>
+                    <Link href={p.link}>
+                      <h4 className={styles.titleH4}>{p.title}</h4>
+                      {p.content}
+                    </Link>
+                  </li>
                 ))}
-            </select>
-            {1 && (
+              </ul>
+            </div>
+            <div className={styles.ytContainer}>
               <div className={styles.ytFrame}>
+                
                 <iframe
                   src={`https://www.youtube.com/embed/${videoId}`}
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   ></iframe>
+                
               </div>
-            )}
+            </div>
+            <div className={styles.historyContainer}>
+              <h3 className={styles.titleH3}>History Records</h3>
+              <ul className={styles.historyList}>
+                {paragraphs.map((p, index) => (
+                  <li className={styles.history} key={index} onClick={() => handleSelectChange(p.content)}>
+                    {p.content}
+                  </li>
+                ))}
+              </ul>
+              {/* <select
+                onChange={handleSelectChange}
+                className={styles.historySelection}
+                placeholder='History Paragraph'
+              >
+                <option selected disabled>Select Your History Paragraph</option>
+                {paragraphs.map((p, index) => (
+                  <option key={index} value={p.content}>{p.content}</option>
+                  ))}
+              </select> */}
+            </div>
           </div>
           <textarea 
             value={paragraph} onChange={(e) => setParagraph(e.target.value)}

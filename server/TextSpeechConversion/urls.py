@@ -22,7 +22,7 @@ from drf_spectacular.views import SpectacularJSONAPIView, SpectacularRedocView, 
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView, TokenObtainPairView
 from rest_framework.routers import DefaultRouter
 from main import views
-from authentication.views import register, logout
+from authentication.views import register, logout, google_login
 from django.urls import path, include
 
 router = DefaultRouter()
@@ -30,6 +30,7 @@ router.register(r'users', views.UserViewSet)
 router.register(r'paragraphs', views.ParagraphViewSet)
 router.register(r'phrases', views.PhraseViewSet)
 router.register(r'comparisonResult', views.ComparisonResultViewSet)
+router.register(r'recommends', views.RecommendViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +40,7 @@ urlpatterns = [
     
     path('api/register/', register, name='register'),
     path('api/logout/', logout, name='logout'),
+    #path('api/auth/google/', google_login, name='google_login'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
@@ -50,7 +52,6 @@ urlpatterns = [
     # path('api/tts/', views.text_to_speech, name='text_to_speech'),
     path('api/testroute/', views.my_view),
     path('social-auth/', include('social_django.urls', namespace='social')),
-
 ]
 
 if settings.DEBUG:

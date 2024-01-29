@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './signup.module.css';
+import { domain } from '@/config';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -11,7 +12,7 @@ const Register = () => {
     const router = useRouter();
 
     // const domain = 'http://localhost:8000';
-    const domain = 'https://thundercreation.com';
+    // const domain = 'https://thundercreation.com';
 
 
     const handleRegister = async () => {
@@ -25,12 +26,9 @@ const Register = () => {
             });
 
             const data = await response.json();
-            
             if (response.ok) {
-                
                 router.push('/login');
             } else {
-                
                 console.error('Registration failed:', data);
             }
         } catch (error) {

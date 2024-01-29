@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Paragraph, Phrase, ComparisonResult
+from .models import Paragraph, Phrase, ComparisonResult, Recommend
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,3 +21,8 @@ class ComparisonResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComparisonResult
         fields = ['id', 'user', 'phrase', 'correctPhrase', 'wrongPhrase', 'createDatetime' ]
+
+class RecommendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recommend
+        fields = ['id', 'title', 'content', 'link']

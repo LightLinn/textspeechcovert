@@ -11,8 +11,8 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import Paragraph, Phrase, ComparisonResult
-from .serializers import ParagraphSerializer, PhraseSerializer, UserSerializer, ComparisonResultSerializer
+from .models import Paragraph, Phrase, ComparisonResult, Recommend
+from .serializers import ParagraphSerializer, PhraseSerializer, UserSerializer, ComparisonResultSerializer, RecommendSerializer
 import re
 import jsonschema_specifications
 from io import BytesIO
@@ -96,7 +96,6 @@ class ParagraphViewSet(viewsets.ModelViewSet):
         # phrases = re.split(r'(?<!\d)[.?!](?!\d)', content)
         # return [phrase.strip() for phrase in phrases if phrase.strip()]
         
-
 class PhraseViewSet(viewsets.ModelViewSet):
     queryset = Phrase.objects.all()
     serializer_class = PhraseSerializer
@@ -114,10 +113,45 @@ class PhraseViewSet(viewsets.ModelViewSet):
         response = HttpResponse(fp.getvalue(), content_type='audio/mpeg')
         response['Content-Disposition'] = 'attachment; filename="speech.mp3"'
         return response
+    
+    @action(detail=False, methods=['post'])
+    def chatgpt_text_to_speech(self, request):
+        word = request.data.get('word')
+        wordinfo = request.data.get('wordinfo')
+        langType = request.data.get('lang')
+        
+        word_audio = gTTS(text=word, lang='en')
+        wordinfo_audio = gTTS(text=wordinfo, lang='zh')
+        fp = BytesIO()
+        fp2 = BytesIO()
+        word_audio.write_to_fp(fp)
+        wordinfo_audio.write_to_fp(fp2)
+        fp.seek(0)
+        fp2.seek(0)
+
+        word_audio_segment = AudioSegment.from_file(fp, format="mp3")
+        wordinfo_audio_segment = AudioSegment.from_file(fp2, format="mp3")
+        combined_audio = word_audio_segment + wordinfo_audio_segment
+        combined_fp = BytesIO()
+        combined_audio.export(combined_fp, format="mp3")
+        combined_fp.seek(0)
+
+        response = HttpResponse(combined_fp.getvalue(), content_type='audio/mpeg')
+        response['Content-Disposition'] = 'attachment; filename="speech.mp3"'
+        return response
 
 class ComparisonResultViewSet(viewsets.ModelViewSet):
     queryset = ComparisonResult.objects.all()
     serializer_class = ComparisonResultSerializer
+
+class RecommendViewSet(viewsets.ModelViewSet):
+    queryset = Recommend.objects.all()
+    serializer_class = RecommendSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.queryset.order_by('-createDatetime')[:5]
+
 
 class WordInfoView(APIView):
     def get(self, request, format=None):
@@ -134,8 +168,7 @@ class WordInfoView(APIView):
         prompt=f"Please use 20 characters in Traditional Chinese to explain the words.: 「{word}」"
         client = openai.OpenAI(api_key=OPENAI_API_KEY)
         chat_completion = client.chat.completions.create(
-                messages=[
-                        {
+                messages=[{
                             "role": "user",
                             "content": f"{prompt}",
                         }],
@@ -180,7 +213,7 @@ class AudioToResultsView(APIView):
                 user=user,
                 phrase=phrase,
                 correctPhrase=corr_list,
-                wrongPhrase=wrong_list
+                wrongPhrase=wrong_list,
             )
             comparison_result.save()
 
@@ -190,17 +223,16 @@ class AudioToResultsView(APIView):
 def stt(request, audio):
     client = openai.OpenAI(api_key=OPENAI_API_KEY)
     text = client.audio.transcriptions.create(model="whisper-1", file=audio, response_format="text")
-    return text    
+    return text
 
 def str_clean(string):
     string = string.replace(".", "")
     string = string.replace(",", "")
     string = string.replace("!", "")
     string = string.replace("?", "")
+    string = string.replace("-", " ")
     string = string.lower().split()
     return string
-
-
 
 def lcs_corrected(X, Y):
     """
@@ -241,6 +273,5 @@ def my_view(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         content = data.get('content')
-
         return JsonResponse({'message': '成功收到資料', 'received_content': content})
     return JsonResponse({'message': '只接受 POST 請求'})

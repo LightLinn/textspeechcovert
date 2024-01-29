@@ -22,9 +22,9 @@ soundstretch = "^1.2"
 uwsgi = "^2.0.23"
 gunicorn = "^21.2.0"
 python-dotenv = "^1.0.0"
-pytube = "^15.0.0"
 social-auth-app-django = "^5.4.0"
 youtube-dl = "^2021.12.17"
+pytube = "^15.0.0"
 
 
 [build-system]

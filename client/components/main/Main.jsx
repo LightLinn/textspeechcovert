@@ -7,6 +7,7 @@ import AudioPlayer from 'react-h5-audio-player';
 import Paragraphs from '../paragraphs/Paragraphs';
 import MainService from '../mainService/MainService';
 import 'react-h5-audio-player/lib/styles.css';
+import { domain } from '@/config';
 
 const Main = () => {
   return (

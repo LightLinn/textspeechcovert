@@ -28,12 +28,72 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 80%;
+  width: 100%;
 }
 
 .topContainer{
   display: flex;
   gap: 10px;
+}
+
+.historySelection{
+  flex: 1;
+  padding: 10px;
+  font-size: 20px;
+  width: 30%;
+}
+
+.historyContainer{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.recommendContainer{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.titleH3{
+  padding: 5px;
+  text-align: center;
+  background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  color: #eee;
+}
+
+.titleH4{
+  padding: 5px 0px;
+}
+
+.historyList{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 10px;
+  list-style-type: none;
+}
+
+.history{
+  border: 1px solid gray;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.recommendList{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 10px;
+  list-style-type: none;
+}
+
+.recommend{
+  border: 1px solid gray;
+  padding: 5px;
+  cursor: pointer;
 }
 
 .ytinput{
@@ -45,12 +105,18 @@
   font-size: 14px;
 }
 
+.ytContainer{
+  display: flex;
+  flex: 2;
+  width: 100%;
+  height: 500px;
+}
+
 .ytFrame{
   display: block;
   position: relative;
+  flex: 2;
   width: 100%;
-  padding-top: 56.25%;
-  overflow: hidden;
 }
 
 .ytFrame iframe {
@@ -58,7 +124,13 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 80%;
+}
+
+.recommendContainer{
+  display: flex;
+  flex: 1;
+  border: 1px solid #333;
 }
 
 .textArea{
@@ -71,14 +143,15 @@
   font-size: 14px;
 }
 
-.historySelection{
-  padding: 10px;
-  font-size: 20px;
-  width: 30%;
+
+@media screen and (max-width: 1280px) {
+  .ytFrame iframe{
+    height: 60%;
+  }
 }
 
-@media screen and (max-width: 640px) {
-  .paragraphContainer{
-    width: 100%;
+@media screen and (max-width: 1024px) {
+  .ytFrame iframe{
+    height: 40%;
   }
 }

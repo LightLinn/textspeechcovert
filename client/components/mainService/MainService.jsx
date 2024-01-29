@@ -4,10 +4,11 @@ import React, { useContext, useState, useRef,  useEffect, useCallback} from 'rea
 import { DataContext } from '@/context/Context';
 import styles from './mainService.module.css';
 import AudioPlayer from 'react-h5-audio-player';
-import LoadingSpinner from '@/components/loading/LoadingSpinner'
+import LoadingSpinner from '@/components/loading/LoadingSpinner';
 import RecordAnimation from '../recordAnimation/RecordAnimation';
 import { AuthContext } from '@/context/AuthContext';
 import { resolve } from 'styled-jsx/css';
+import { domain } from '@/config';
 
 const MainService = () => {
 
@@ -33,10 +34,10 @@ const MainService = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  // const [isWaiting, setIsWaiting] = useState(false)
+  // const [isWaiting, setIsWaiting] = useState(false);
   const [rate, setRate] = useState(0.8);
   const [text, setText] = useState('');
-  const [ show, setShow ] = useState(false);
+  const [show, setShow] = useState(false);
 
   const currPhrasesIndex = useRef(0);
   const currPhraseId = useRef(0);
@@ -55,7 +56,7 @@ const MainService = () => {
   const isWaiting3 = useRef(false);
 
   // const domain = 'http://localhost:8000';
-  const domain = 'https://thundercreation.com';
+  // const domain = 'https://thundercreation.com';
   
 
   // useEffect(() => {
@@ -101,6 +102,9 @@ const MainService = () => {
     if (wrongList.length > 0) {
       const feedbackAudio = new Audio('tryagain.mp3');
       feedbackAudio.play()
+      feedbackAudio.onended = () => {
+        waitingtogo()
+      }
       setFeedback('Try again');
       setFeedbackColor('red');
       timeout = setTimeout(() => {
@@ -109,12 +113,17 @@ const MainService = () => {
     } else {
       const feedbackAudio = new Audio('good.mp3');
       feedbackAudio.play()
+      feedbackAudio.onended = () => {
+        waitingtogo()
+      }
       setFeedback('Good job');
       setFeedbackColor('green');
       timeout = setTimeout(() => {
         setFeedback('');
       }, 3000); 
     }
+
+    
 
     return () => clearTimeout(timeout); 
   }, [wrongList]);
@@ -123,7 +132,6 @@ const MainService = () => {
     let stream;
     
     const initMediaRecorder = () => {
-
       return navigator.mediaDevices.getUserMedia({ audio: true })
       .then(newStream => {
         stream = newStream;
@@ -168,6 +176,13 @@ const MainService = () => {
     };
   }, []);
 
+  const waitingtogo = () => {
+    isWaiting.current = false
+    isWaiting2.current = false
+    isWaiting3.current = false
+    // currWrongList.current = data.wrong_list || []
+  }
+
   const handleAudioEnded = () => {
     if (mediaRecorder && mediaRecorder.state !== "recording") {
       setIsRecording(true);
@@ -196,7 +211,8 @@ const MainService = () => {
     currPhrase.current = phrases[currPhrasesIndex.current].content
   }
 
-  const sendNextPhrase = () => {
+  const sendNextPhrase = async () => {
+    let timeout;
     const newPhraseIndex = currPhrasesIndex.current + 1;
     if (newPhraseIndex >= phrases.length){
       alert('Finish')
@@ -209,6 +225,11 @@ const MainService = () => {
       currPhrase.current = phrases[currPhrasesIndex.current].content;
       currWrongList.current = []
     }
+
+    timeout = await setTimeout(() => {
+      console.log('Waiting for next phrase.')
+    }, 2000)
+    
   };
 
   const togglePlayPause = () => {
@@ -218,16 +239,16 @@ const MainService = () => {
           audio.play();
       } else {
           audio.pause();
-      }
-    }
+      };
+    };
   };
 
   const changeSpeed = (speed) => {
     if (audioRef.current) {
-        audioRef.current.playbackRate = speed;
-        console.log('here');
-        count.current = count.current + 1;
-    } 
+      audioRef.current.playbackRate = speed;
+      console.log('here');
+      count.current = count.current + 1;
+    };
   };
 
   const handleAudioRequest = async (newPhrase, newPhraseId=null, rate=1) => {
@@ -257,7 +278,7 @@ const MainService = () => {
             pramAudio.onended = () => {
               const phraseAudio = new Audio(audioUrl);
               phraseAudio.addEventListener('loadedmetadata', () => {
-                duration.current = phraseAudio.duration; // 音频长度（秒）
+                duration.current = phraseAudio.duration; 
               });
               phraseAudio.playbackRate = rate;
               phraseAudio.play();
@@ -298,9 +319,9 @@ const MainService = () => {
       const data = await response.json();
       console.log('Server respone:', data);
       setWrongList(data.wrong_list || []);
-      isWaiting.current = false
-      isWaiting2.current = false
-      isWaiting3.current = false
+      // isWaiting.current = false
+      // isWaiting2.current = false
+      // isWaiting3.current = false
       currWrongList.current = data.wrong_list || []
       setCorrList(data.corr_list || ['']);
       setAudioData(null);
@@ -310,8 +331,7 @@ const MainService = () => {
       //   const newPhrase = phrases[currPhraseIndex].content;
       //   handleAudioRequest(newPhrase)
       // }
-      
-      
+
     } catch (error) {
       console.error('Error:', error);
     }
@@ -380,9 +400,9 @@ const MainService = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setChatgptRes('')
-      setChatgptRes(data)
-      return data; 
+      setChatgptRes('');
+      setChatgptRes(data);
+      return data;
     } catch (error) {
       console.error("Error fetching word info:", error);
       return null;
@@ -395,12 +415,12 @@ const MainService = () => {
       const wordInfo = await fetchWordInfo(word);
       setIsLoading(false);
       try {
-        const response = await fetch(`${domain}/api/phrases/text_to_speech/`, {
+        const response = await fetch(`${domain}/api/phrases/chatgpt_text_to_speech/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ phrase: wordInfo, lang: 'zh'})
+            body: JSON.stringify({ word: word, wordinfo: wordInfo, lang: 'zh'})
         });
 
         if (!response.ok) {
@@ -441,7 +461,7 @@ const MainService = () => {
       while (isRunning.current) {
         console.log(count.current)
         if (isWaiting.current) {
-          await delay(4000);
+          await delay(2000);
           console.log('wait')
           continue
         } else {
@@ -481,7 +501,7 @@ const MainService = () => {
                   } else if (!isRunning.current) {
                     break;
                   } else if (newReviseList.current.length === 0) {
-                    count.current =  9999
+                    count.current =  99999
                     console.log(count.current)
                     currWrongList.current = []
                     setWrongList([])
@@ -527,6 +547,7 @@ const MainService = () => {
     isRunning.current = false
     isWaiting.current = false
     comment.current = ''
+    // setShow(false)
   }
   
 
@@ -562,7 +583,7 @@ const MainService = () => {
             onEnded={handleAudioEnded}
             ref={audioRef}
           /> */}
-          {/* <audio 
+          {/* <audio
             className={styles.audioPlayer}
             ref={audioRef} 
             controls
