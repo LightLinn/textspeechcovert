@@ -25,6 +25,9 @@ python-dotenv = "^1.0.0"
 social-auth-app-django = "^5.4.0"
 youtube-dl = "^2021.12.17"
 pytube = "^15.0.0"
+pyjwt = "^2.8.0"
+dj-rest-auth = "^5.0.2"
+django-allauth = "^0.60.1"
 
 
 [build-system]

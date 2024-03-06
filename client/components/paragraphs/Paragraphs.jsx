@@ -11,16 +11,18 @@ import { domain } from '@/config';
 const Paragraphs = () => {
   const [paragraph, setParagraph] = useState('');
   const [paragraphs, setParagraphs] = useState([]);
-  const [recommends, setRecommends] = useState([])
+  const [recommends, setRecommends] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isShowYT, setIsShowYT] = useState(false);
   const [reloadFlag, setReloadFlag] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [url, setUrl] = useState('');
-  const [urlInputValue, setUrlInputValue] = useState('')
+  const [urlInputValue, setUrlInputValue] = useState('');
   const [videoId, setVideoId] = useState('');
   const { setPhrases } = useContext(DataContext);
   const { token } = useContext(AuthContext);
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -97,7 +99,7 @@ const Paragraphs = () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({ content: paragraph, user: 1}),
+      body: JSON.stringify({ content: paragraph, user: 1, link: url}),
     });
     const data = await response.json();
     setPhrases(data.phrases)
@@ -105,8 +107,12 @@ const Paragraphs = () => {
     setParagraph('')
   };
 
-  const handleSelectChange = (content) => {
+  const handleSelectChange = (content, link) => {
     setParagraph(content);
+    const id = extractVideoID(link);
+    setVideoId(id);
+    setIsShowYT(true)
+    setUrl(link);
   };
 
   const handleUrlToText = async (event) => {
@@ -138,10 +144,15 @@ const Paragraphs = () => {
 
       const data = await response.json();
       setParagraph(data.text); 
+      setErrorMessage('');
     } catch (error) {
       console.error('Failed to convert URL:', error);
+      setErrorMessage('The URL is wrong, please confirm again.');
+      setTimeout(() => {
+        setErrorMessage(''); // 3秒后清除错误信息
+      }, 3000); 
       setParagraph('Invalid YouTube URL')
-      // setUrlInputValue('')
+      setUrlInputValue('')
     } finally {
       setIsLoading(false); 
     }
@@ -162,18 +173,17 @@ const Paragraphs = () => {
     <div className={styles.container}>
       <form onSubmit={handleSubmit}>
         <div className={styles.paragraphContainer}>
-          <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='Enter Youtube URL' value={urlInputValue}/>
+          <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='Enter Youtube URL' value={url}/>
           {isLoading && <LoadingSpinner />}
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
           <div className={styles.topContainer}>
             <div className={styles.historyContainer}>
               <h3 className={styles.titleH3}>Recommended</h3>
               <ul className={styles.recommendList}>
                 {recommends.map((p, index) => (
-                  <li className={styles.recommend}>
-                    <Link href={p.link}>
-                      <h4 className={styles.titleH4}>{p.title}</h4>
-                      {p.content}
-                    </Link>
+                  <li className={styles.recommend} key={index} onClick={() => handleSelectChange(p.content, p.link)}>
+                    <h4 className={styles.titleH4}>{p.title}</h4>
+                    {p.content}
                   </li>
                 ))}
               </ul>
@@ -194,8 +204,9 @@ const Paragraphs = () => {
               <h3 className={styles.titleH3}>History Records</h3>
               <ul className={styles.historyList}>
                 {paragraphs.map((p, index) => (
-                  <li className={styles.history} key={index} onClick={() => handleSelectChange(p.content)}>
-                    {p.content}
+                  <li className={styles.history} key={index} onClick={() => handleSelectChange(p.content, p.link)}>
+                    {/* {p.content} */}
+                    {p.content.length > 100 ? `${p.content.slice(0, 100)}...` : p.content}
                   </li>
                 ))}
               </ul>

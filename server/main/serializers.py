@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ParagraphSerializer(serializers.ModelSerializer):
     class Meta:
         model = Paragraph
-        fields = ['id', 'user', 'content', 'createDatetime']
+        fields = ['id', 'user', 'content', 'createDatetime', 'link']
 
 class PhraseSerializer(serializers.ModelSerializer):
     class Meta:
