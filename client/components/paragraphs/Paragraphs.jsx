@@ -1,6 +1,9 @@
+'use client'
+
 import React from 'react'
 import { useRouter } from 'next/navigation';
 import { useState, createContext, useContext, useEffect } from 'react';
+import { useRunning } from '@/context/RunningContext'
 import styles from './paragraphs.module.css';
 import Link from "next/link";
 import { DataContext } from '@/context/Context';
@@ -22,6 +25,7 @@ const Paragraphs = () => {
   const { setPhrases } = useContext(DataContext);
   const { token } = useContext(AuthContext);
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const isRunning = useRunning();
 
   const router = useRouter();
 
@@ -88,6 +92,11 @@ const Paragraphs = () => {
       return;
     }
 
+    if (isRunning.current) {
+      alert("Operation is currently running, please wait.");
+      return;
+    }
+
     if (!paragraph.trim()) {
       alert("Please input paragraph");
       return; 
@@ -105,6 +114,7 @@ const Paragraphs = () => {
     setPhrases(data.phrases)
     setReloadFlag(!reloadFlag);
     setParagraph('')
+    
   };
 
   const handleSelectChange = (content, link) => {
@@ -151,7 +161,7 @@ const Paragraphs = () => {
       setTimeout(() => {
         setErrorMessage(''); // 3秒后清除错误信息
       }, 3000); 
-      setParagraph('Invalid YouTube URL')
+      setParagraph('')
       setUrlInputValue('')
     } finally {
       setIsLoading(false); 
@@ -223,7 +233,7 @@ const Paragraphs = () => {
             </div>
           </div>
           <textarea 
-            value={paragraph} onChange={(e) => setParagraph(e.target.value)}
+            value={paragraph} onChange={(e) => {setParagraph(e.target.value); setUrl('')}}
             cols="30" 
             rows="10" 
             className={styles.textArea} 

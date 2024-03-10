@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import Footer from "@/components/footer/Footer";
 import { DataProvider } from '../context/Context';
+import { RunningProvider } from '../context/RunningContext'
 import {AuthProvider} from '@/context/AuthContext'
 import Head from "next/head";
 
@@ -22,13 +23,15 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <AuthProvider>
           <DataProvider>
-            <div className="container">
-              <div className="wrapper">
-                <Navbar />
-                {children}
-                {/* <Footer /> */}
+            <RunningProvider>
+              <div className="container">
+                <div className="wrapper">
+                  <Navbar />
+                  {children}
+                  {/* <Footer /> */}
+                </div>
               </div>
-            </div>
+            </RunningProvider>
           </DataProvider>
         </AuthProvider>
       </body>

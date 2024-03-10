@@ -608,7 +608,7 @@ const MainService = () => {
           {comment.current}
         </h2>
         <div className={styles.results}>
-          {!currRevising.current && (
+          {!currRevising.current && phrases[currPhrasesIndex.current] && (
             <>
               {phrases[currPhrasesIndex.current].content.split(' ').map((word, index) => ( 
               <span 
