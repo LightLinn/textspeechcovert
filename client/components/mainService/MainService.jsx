@@ -123,8 +123,6 @@ const MainService = () => {
       }, 3000); 
     }
 
-    
-
     return () => clearTimeout(timeout); 
   }, [wrongList]);
 
@@ -226,6 +224,8 @@ const MainService = () => {
       currWrongList.current = []
     }
     setCorrList([])
+    setWrongList([])
+    setIsInitialRender(true);
     timeout = await setTimeout(() => {
       console.log('Waiting for next phrase.')
     }, 2000)

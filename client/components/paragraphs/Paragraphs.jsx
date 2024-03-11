@@ -25,9 +25,10 @@ const Paragraphs = () => {
   const { setPhrases } = useContext(DataContext);
   const { token } = useContext(AuthContext);
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
-  const isRunning = useRunning();
+  const { isRunning } = useRunning();
 
   const router = useRouter();
+
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -92,11 +93,6 @@ const Paragraphs = () => {
       return;
     }
 
-    if (isRunning.current) {
-      alert("Operation is currently running, please wait.");
-      return;
-    }
-
     if (!paragraph.trim()) {
       alert("Please input paragraph");
       return; 
@@ -114,6 +110,7 @@ const Paragraphs = () => {
     setPhrases(data.phrases)
     setReloadFlag(!reloadFlag);
     setParagraph('')
+    setUrl('')
     
   };
 
@@ -181,6 +178,7 @@ const Paragraphs = () => {
 
   return (
     <div className={styles.container}>
+      
       <form onSubmit={handleSubmit}>
         <div className={styles.paragraphContainer}>
           <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='Enter Youtube URL' value={url}/>
@@ -243,6 +241,7 @@ const Paragraphs = () => {
           <button type='submit' className={styles.btn}>Submit</button>
         </div>
       </form>
+      
     </div>
   )
 }

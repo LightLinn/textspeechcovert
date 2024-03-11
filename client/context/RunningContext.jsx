@@ -1,8 +1,7 @@
 'use client'
 
-import React, { createContext, useRef, useContext } from 'react';
+import React, { createContext, useRef, useContext, useEffect } from 'react';
 
-// 创建Context
 export const RunningContext = createContext();
 
 export const RunningProvider = ({ children }) => {
