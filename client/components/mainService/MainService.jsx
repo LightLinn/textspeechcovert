@@ -449,6 +449,9 @@ const MainService = () => {
   }
 
   const run = async (event) => {
+    setCorrList([])
+    setWrongList([])
+    setIsInitialRender(true);
     isRunning.current = true;
     setShow(true)
     count.current = 0
@@ -554,6 +557,7 @@ const MainService = () => {
   const stopRunning = () => {
     isRunning.current = false;
     isWaiting.current = false;
+    
   };
   
   return (
