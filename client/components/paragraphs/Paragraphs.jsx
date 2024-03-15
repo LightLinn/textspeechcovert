@@ -88,7 +88,7 @@ const Paragraphs = () => {
     const token = localStorage.getItem('token')
     event.preventDefault();
 
-    if (!isLoggedIn) {
+    if (!token) { //!isLoggedIn
       router.push('/login');
       return;
     }

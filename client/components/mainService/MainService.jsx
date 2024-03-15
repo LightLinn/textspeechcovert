@@ -79,6 +79,18 @@ const MainService = () => {
       audioRef.current.load();
     }
   }, [audioUrl]);
+
+  // useEffect(() => {
+  //   isRunning.current = false;
+  //   isWaiting.current = false;
+  //   isWaiting2.current = false
+  //   isWaiting3.current = false
+  //   currRevising.current = false
+  //   const timer = setTimeout(() => {
+  //     setShow(false);
+  //   }, 5000);
+  //   return () => clearTimeout(timer);
+  // }, [phrases]);
   
   // useEffect(() => {
   //   currPhraseId.current = phrases[currPhraseIndex].id;
@@ -89,7 +101,7 @@ const MainService = () => {
   //   if (wrongList) {
   //     console.log("wrongList 更新了:", wrongList);
   //   }
-  // }, [wrongList]);
+  // }, [wrongList]);🐢
 
   useEffect(() => {
     let timeout;
@@ -549,6 +561,7 @@ const MainService = () => {
       }
     isRunning.current = false
     isWaiting.current = false
+    currRevising.current = false
     comment.current = ''
     // setShow(false)
   }
@@ -557,6 +570,7 @@ const MainService = () => {
   const stopRunning = () => {
     isRunning.current = false;
     isWaiting.current = false;
+    currRevising.current = false
     
   };
   
@@ -604,6 +618,7 @@ const MainService = () => {
           </button>
         )}
       </div>
+      {/* <button onClick={() => window.location.reload()}>重新加载页面</button> */}
       {isRecording && recordingAnimation}
       {isAnalyzing && <LoadingSpinner />}
       {feedback && <div className={styles.feedback} style={{ color: feedbackColor }}>{feedback}</div>}
