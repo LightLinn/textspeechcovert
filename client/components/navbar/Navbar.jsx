@@ -9,7 +9,7 @@ import { AuthContext } from '@/context/AuthContext';
 
 const Navbar = () => {
   
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn, user } = useContext(AuthContext);
   const router = useRouter();
 
   const handleLogout = () => {
@@ -24,10 +24,11 @@ const Navbar = () => {
       <div className={styles.logo}>
         <Link href="/" className={styles.logoicon}>
           {/* <Image src='' alt="logo" width={50} height={50} /> */}
-          <h1 className={styles.logoText}>Logo</h1>
+          <h1 className={styles.logoText}>MoMoGo</h1>
         </Link>
       </div>
       <div className={styles.links}>
+        <div className={styles.username}>{user ? `${user}` : 'Hi User'}</div>
         {!isLoggedIn ? (
           <Link href="/login" className={styles.link}>Login</Link>
         ) : (

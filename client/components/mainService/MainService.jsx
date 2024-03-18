@@ -12,6 +12,7 @@ import { domain } from '@/config';
 
 const MainService = () => {
 
+  const isMounted = useRef(true);
   const { phrases } = useContext(DataContext);
   const { token } = useContext(AuthContext);
   const [ phrase , setPhrase ] = useState([]);

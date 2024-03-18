@@ -6,6 +6,7 @@ class Paragraph(models.Model):
     content = models.TextField()
     createDatetime = models.DateTimeField(auto_now_add=True, blank=True, editable=False)
     link = models.CharField(max_length=200, blank=True)
+    link_ID = models.CharField(max_length=11, blank=True)
 
     def __str__(self):
         return self.content[:50]
@@ -32,6 +33,7 @@ class Recommend(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     link = models.CharField(max_length=200, blank=True)
+    link_ID = models.CharField(max_length=11, blank=True)
     createDatetime = models.DateTimeField(auto_now_add=True, blank=True, editable=False)
 
     def __str__(self):

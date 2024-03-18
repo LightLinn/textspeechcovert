@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ParagraphSerializer(serializers.ModelSerializer):
     class Meta:
         model = Paragraph
-        fields = ['id', 'user', 'content', 'createDatetime', 'link']
+        fields = ['id', 'user', 'content', 'createDatetime', 'link', 'link_ID']
 
 class PhraseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,4 +25,4 @@ class ComparisonResultSerializer(serializers.ModelSerializer):
 class RecommendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recommend
-        fields = ['id', 'title', 'content', 'link']
+        fields = ['id', 'title', 'content', 'link', 'link_ID']

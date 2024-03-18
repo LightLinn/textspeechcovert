@@ -8,6 +8,23 @@ from .models import BlacklistedToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        # 首先调用父类的validate方法获取默认的token数据
+        data = super().validate(attrs)
+
+        # 然后添加你想要返回的用户信息，例如用户名和邮箱
+        # 注意: self.user 是在调用super().validate(attrs)后可用的
+        data.update({
+            'username': self.user.username,
+            'email': self.user.email,
+            # 添加更多你需要的用户信息
+        })
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 @psa('social:complete')
 def google_login(request):
     user = request.backend.do_auth(request.GET.get('access_token'))
@@ -31,6 +48,7 @@ def register(request):
     return Response({
         'refresh': str(refresh),
         'access': str(refresh.access_token),
+        
     })
 
 @api_view(['POST'])

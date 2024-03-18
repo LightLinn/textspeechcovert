@@ -10,8 +10,10 @@ import { DataContext } from '@/context/Context';
 import LoadingSpinner from '@/components/loading/LoadingSpinner'
 import { AuthContext } from '@/context/AuthContext';
 import { domain } from '@/config';
+import Image from 'next/image';
 
 const Paragraphs = () => {
+  const [failedImages, setFailedImages] = useState(new Set());
   const [paragraph, setParagraph] = useState('');
   const [paragraphs, setParagraphs] = useState([]);
   const [recommends, setRecommends] = useState([]);
@@ -104,7 +106,7 @@ const Paragraphs = () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({ content: paragraph, user: 1, link: url}),
+      body: JSON.stringify({ content: paragraph, user: 1, link: url, link_ID: extractVideoID(url) || ''}),
     });
     const data = await response.json();
     setPhrases(data.phrases)
@@ -112,6 +114,10 @@ const Paragraphs = () => {
     setParagraph('')
     setUrl('')
     
+  };
+
+  const handleImageError = (id) => {
+    setFailedImages(prev => new Set(prev).add(id));
   };
 
   const handleSelectChange = (content, link) => {
@@ -146,7 +152,10 @@ const Paragraphs = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorData = await response.json();
+        const errorMessage = errorData.error || 'Network response was not ok';
+        throw new Error(errorMessage);
+        // throw new Error('Network response was not ok');
       }
 
       const data = await response.json();
@@ -155,6 +164,7 @@ const Paragraphs = () => {
     } catch (error) {
       console.error('Failed to convert URL:', error);
       setErrorMessage('The URL is wrong, please confirm again.');
+      // alert(error.message);
       setTimeout(() => {
         setErrorMessage(''); // 3秒后清除错误信息
       }, 3000); 
@@ -181,22 +191,26 @@ const Paragraphs = () => {
       
       <form onSubmit={handleSubmit}>
         <div className={styles.paragraphContainer}>
-          <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='Enter Youtube URL' value={url}/>
+          {/* <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='Enter Youtube URL' value={url}/>
           {isLoading && <LoadingSpinner />}
-          {errorMessage && <div className="error-message">{errorMessage}</div>}
+          {errorMessage && <div className="error-message">{errorMessage}</div>} */}
           <div className={styles.topContainer}>
             <div className={styles.historyContainer}>
               <h3 className={styles.titleH3}>Recommended</h3>
               <ul className={styles.recommendList}>
-                {recommends.map((p, index) => (
+                {recommends && recommends.map((p, index) => (
                   <li className={styles.recommend} key={index} onClick={() => handleSelectChange(p.content, p.link)}>
-                    <h4 className={styles.titleH4}>{p.title}</h4>
+                    <Image src={`https://img.youtube.com/vi/${p.link_ID}/0.jpg`} alt="YouTube Video Thumbnail" width={96} height={72} />
+                    {/* <h4 className={styles.titleH4}>{p.title}</h4> */}
                     {p.content}
                   </li>
                 ))}
               </ul>
             </div>
             <div className={styles.ytContainer}>
+            <input onChange={handleUrlToText} className={styles.ytinput} type="text" placeholder='Enter Youtube URL' value={url}/>
+            {isLoading && <LoadingSpinner />}
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
               <div className={styles.ytFrame}>
                 
                 <iframe
@@ -214,7 +228,10 @@ const Paragraphs = () => {
                 {paragraphs.map((p, index) => (
                   <li className={styles.history} key={index} onClick={() => handleSelectChange(p.content, p.link)}>
                     {/* {p.content} */}
-                    {p.content.length > 100 ? `${p.content.slice(0, 100)}...` : p.content}
+                    {!failedImages.has(p.link_ID) && (
+                    <Image src={`https://img.youtube.com/vi/${p.link_ID}/0.jpg`} alt="YouTube Video Thumbnail" width={96} height={72} onError={() => handleImageError(p.link_ID)} />
+                    )}
+                    {p.content.length > 30 ? `${p.content.slice(0, 30)}...` : p.content}
                   </li>
                 ))}
               </ul>

@@ -10,22 +10,29 @@ import 'react-h5-audio-player/lib/styles.css';
 import { domain } from '@/config';
 
 const Main = () => {
+  const [key, setKey] = useState(0);
+
+  const reloadMainService = () => {
+    setKey(prevKey => prevKey + 1); // 更新key状态以重新挂载MainService组件
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.textContainer}>
-        <h1 className={styles.title}>Text Speech Convert</h1>
+        <h1 className={styles.title}>Easy Talk with MoMoGo</h1>
         <p className={styles.desc}>
-          This is a Text and Speech Convert Service.
+          Enter a phrase or Youtube URL and speak after me:
         </p>
         <p className={styles.desc}>
-          You can enter articles and Youtube video links to use our services.
+          請輸入英文句子或Youtube連結之後跟著我說：
         </p>
       </div>
       <div className={styles.videoContainer}>
 
       </div>
       <Paragraphs />
-      <MainService />
+      <MainService key={key} />
+      <button onClick={reloadMainService}>Reload Main Service</button>
     </div>
   )
 }

@@ -50,6 +50,10 @@ class UrlToText(APIView):
         if url == '':
             return Response({'text': ''}, status=status.HTTP_200_OK)
         
+        # video_length_seconds = get_youtube_video_length(url)
+        # if video_length_seconds > 600: 
+        #     return Response({"error": "Video length exceeds 10 minutes"}, status=status.HTTP_400_BAD_REQUEST)
+
         yt = YouTube(url)
         audio = yt.streams.filter().get_audio_only().download(filename=f'audio.mp3')
         audio = open(audio, 'rb')
@@ -219,6 +223,11 @@ class AudioToResultsView(APIView):
 
             return Response({'message': 'Audio file received successfully', 'corr_list': corr_list, 'wrong_list': wrong_list}, status=status.HTTP_200_OK)
         return Response({'error': 'No audio file received'}, status=400)
+    
+def get_youtube_video_length(url):
+    yt = YouTube(url)
+    length_seconds = yt.length
+    return length_seconds
 
 def stt(request, audio):
     client = openai.OpenAI(api_key=OPENAI_API_KEY)

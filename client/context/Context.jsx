@@ -10,6 +10,7 @@ export const DataProvider = ({ children }) => {
   return (
     <DataContext.Provider value={{ phrases, setPhrases }}>
       {children}
+      
     </DataContext.Provider>
   );
 };

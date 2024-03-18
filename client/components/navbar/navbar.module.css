@@ -26,7 +26,16 @@
 }
 
 .logoText {
+  font-size: 36px;
+}
+
+.username{
   font-size: 24px;
+  text-align: center;
+  background-image: linear-gradient(200deg, #00c6fb 0%, #005bea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
 }
 
 .links {

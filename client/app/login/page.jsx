@@ -10,7 +10,7 @@ import { domain } from '@/config';
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const { setIsLoggedIn } = useContext(AuthContext);
+    const { setIsLoggedIn, setUser } = useContext(AuthContext);
     const router = useRouter();
 
     // const domain = 'http://localhost:8000';
@@ -32,6 +32,8 @@ const Login = () => {
             if (response.ok) {
                 localStorage.setItem('token', data.access);
                 setIsLoggedIn(true);
+                setUser(data.username);
+                console.log(data)
                 router.push('/');
             } else {
                 console.error('Login failed:', data);
