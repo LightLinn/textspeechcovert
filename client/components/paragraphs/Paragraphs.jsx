@@ -129,6 +129,7 @@ const Paragraphs = () => {
   };
 
   const handleUrlToText = async (event) => {
+    const token = localStorage.getItem('token')
     const url = event.target.value;
     setIsLoading(true);
     const id = extractVideoID(url);
@@ -136,7 +137,7 @@ const Paragraphs = () => {
     setUrl(event.target.value);
     setIsShowYT(true)
 
-    if (!isLoggedIn) {
+    if (!token) {
       router.push('/login');
       return;
     }

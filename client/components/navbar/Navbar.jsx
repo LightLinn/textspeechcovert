@@ -9,13 +9,14 @@ import { AuthContext } from '@/context/AuthContext';
 
 const Navbar = () => {
   
-  const { isLoggedIn, setIsLoggedIn, user } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn, user, setUser } = useContext(AuthContext);
   const router = useRouter();
 
   const handleLogout = () => {
     console.log(isLoggedIn)
     localStorage.removeItem('token');
     setIsLoggedIn(false);
+    setUser(null)
     router.push('/login');
   };
 
